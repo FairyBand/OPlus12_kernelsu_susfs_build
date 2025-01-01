@@ -44,7 +44,7 @@ echo "CONFIG_KSU=y" >> ./common/arch/arm64/configs/gki_defconfig
 echo "CONFIG_KSU_SUSFS=y" >> ./common/arch/arm64/configs/gki_defconfig
 echo "CONFIG_KSU_SUSFS_SUS_SU=y" >> ./common/arch/arm64/configs/gki_defconfig
 echo "CONFIG_LOCALVERSION_AUTO=n" >> ./common/arch/arm64/configs/gki_defconfig
-echo "CONFIG_LOCALVERSION="Nijika" >> ./common/arch/arm64/configs/gki_defconfig
+echo "CONFIG_LOCALVERSION="Nijika"" >> ./common/arch/arm64/configs/gki_defconfig
 touch ./common/.scmversion
 cd ..
 sed -i '2s/check_defconfig//' ./kernel_platform/common/build.config.gki
