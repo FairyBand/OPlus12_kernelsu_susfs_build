@@ -20,6 +20,10 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v4
 
+      #Install Repo
+      - name: Install Repo
+        run: apt install repo
+
       # Runs Kernel Build Script
       - name: Run Build Script
         run: bash ./buildksususfs.sh
