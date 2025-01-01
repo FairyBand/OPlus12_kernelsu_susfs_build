@@ -21,6 +21,8 @@ cd "$ROOT_DIR"
 # Clone the repositories into the root folder
 echo "Cloning repositories..."
 git clone https://github.com/TheWildJames/AnyKernel3.git -b android14-5.15
+git clone https://gitlab.com/simonpunk/susfs4ksu.git -b gki-android14-6.1
+git clone https://github.com/TheWildJames/kernel_patches.git
 
 # Get the kernel
 echo "Get the kernel..."
@@ -38,6 +40,21 @@ curl -LSs "https://raw.githubusercontent.com/rifsxd/KernelSU/next/kernel/setup.s
 cd ./KernelSU-Next/kernel
 sed -i 's/ccflags-y += -DKSU_VERSION=16/ccflags-y += -DKSU_VERSION=12113/' ./Makefile
 cd ../../
+
+#add susfs
+echo "adding susfs"
+cp ../../susfs4ksu/kernel_patches/50_add_susfs_in_gki-android14-6.1.patch ./common/
+cp ../../susfs4ksu/kernel_patches/fs/susfs.c ./common/fs/
+cp ../../susfs4ksu/kernel_patches/include/linux/susfs.h ./common/include/linux/
+cd ../common
+patch -p1 < 50_add_susfs_in_gki-android14-6.1.patch || true
+cp ../../kernel_patches/69_hide_stuff.patch ./
+patch -p1 -F 3 < 69_hide_stuff.patch || true
+sed -i '/obj-\$(CONFIG_KSU_SUSFS_SUS_SU) += sus_su.o/d' ./fs/Makefile
+cd ..
+cp ../kernel_patches/Makefile_fix.patch ./
+patch -p1 --fuzz=3 < ./Makefile_fix.patch
+
 
 #build Kernel
 echo "CONFIG_KSU=y" >> ./common/arch/arm64/configs/gki_defconfig
