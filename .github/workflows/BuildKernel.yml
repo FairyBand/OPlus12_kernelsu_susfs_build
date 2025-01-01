@@ -24,6 +24,10 @@ jobs:
       - name: Install Repo
         run: sudo apt install repo
 
+      #Install zip
+      - name: Install zip
+        run: sudo apt install zip
+
       # Runs Kernel Build Script
       - name: Run Build Script
         run: sudo bash ./buildksususfs.sh
