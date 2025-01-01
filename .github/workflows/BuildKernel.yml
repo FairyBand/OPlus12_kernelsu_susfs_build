@@ -22,9 +22,9 @@ jobs:
 
       #Install Repo
       - name: Install Repo
-        run: apt install repo
+        run: sudo apt install repo
 
       # Runs Kernel Build Script
       - name: Run Build Script
-        run: bash ./buildksususfs.sh
+        run: sudo bash ./buildksususfs.sh
 
