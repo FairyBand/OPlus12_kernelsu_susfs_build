@@ -34,33 +34,12 @@ repo sync -j$(nproc)
 rm -rf ./kernel_platform/common/android/abi_gki_protected_exports_*
 
 # Add KernelSU
-echo "adding ksu"
+echo "adding ksu-next with susfs"
 cd ./kernel_platform
-curl -LSs "https://raw.githubusercontent.com/rifsxd/KernelSU/next/kernel/setup.sh" | bash -s next
+curl -LSs "https://raw.githubusercontent.com/rifsxd/KernelSU/next/kernel/setup.sh" | bash -s next-susfs-a14-6.1
 cd ./KernelSU-Next/kernel
 sed -i 's/ccflags-y += -DKSU_VERSION=16/ccflags-y += -DKSU_VERSION=12113/' ./Makefile
 cd ../../
-
-#add susfs
-echo "adding susfs"
-cp ../../susfs4ksu/kernel_patches/KernelSU/10_enable_susfs_for_ksu.patch ./KernelSU-Next/
-cp ../../susfs4ksu/kernel_patches/50_add_susfs_in_gki-android14-6.1.patch ./common/
-cp ../../susfs4ksu/kernel_patches/fs/susfs.c ./common/fs/
-cp ../../susfs4ksu/kernel_patches/include/linux/susfs.h ./common/include/linux/
-cd ./KernelSU-Next/
-patch -p1 < 10_enable_susfs_for_ksu.patch
-cd ../common
-patch -p1 < 50_add_susfs_in_gki-android14-6.1.patch || true
-cp ../../kernel_patches/69_hide_stuff.patch ./
-patch -p1 -F 3 < 69_hide_stuff.patch || true
-sed -i '/obj-\$(CONFIG_KSU_SUSFS_SUS_SU) += sus_su.o/d' ./fs/Makefile
-cd ..
-cp ../kernel_patches/selinux.c_fix.patch ./
-patch -p1 -F 3 < selinux.c_fix.patch
-cp ../kernel_patches/apk_sign.c_fix.patch ./
-patch -p1 -F 3 < apk_sign.c_fix.patch
-cp ../kernel_patches/Makefile_fix.patch ./
-patch -p1 --fuzz=3 < ./Makefile_fix.patch
 
 #build Kernel
 echo "CONFIG_KSU=y" >> ./common/arch/arm64/configs/gki_defconfig
