@@ -35,7 +35,7 @@ rm -rf ./kernel_platform/common/android/abi_gki_protected_exports_*
 # Add KernelSU
 echo "adding ksu"
 cd ./kernel_platform
-curl -LSs "https://raw.githubusercontent.com/rifsxd/KernelSU/next/kernel/setup.sh" | bash -s next
+curl -LSs "https://raw.githubusercontent.com/rifsxd/KernelSU-Next/refs/heads/next/kernel/setup.sh" | bash -s next
 cd ./KernelSU-Next/kernel
 sed -i 's/ccflags-y += -DKSU_VERSION=16/ccflags-y += -DKSU_VERSION=12264/' ./Makefile
 cd ../../
