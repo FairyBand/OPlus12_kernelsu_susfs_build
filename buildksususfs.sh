@@ -43,12 +43,10 @@ cd ../../
 
 #add susfs
 echo "adding susfs"
-cp ../../susfs4ksu/kernel_patches/KernelSU/10_enable_susfs_for_ksu.patch ./KernelSU-Next/
 cp ../../susfs4ksu/kernel_patches/50_add_susfs_in_gki-android14-6.1.patch ./common/
 cp ../../susfs4ksu/kernel_patches/fs/susfs.c ./common/fs/
 cp ../../susfs4ksu/kernel_patches/include/linux/susfs.h ./common/include/linux/
 cd ./KernelSU-Next/
-patch -p1 < 10_enable_susfs_for_ksu.patch
 cd ../common
 patch -p1 < 50_add_susfs_in_gki-android14-6.1.patch || true
 cp ../../kernel_patches/69_hide_stuff.patch ./
