@@ -49,16 +49,16 @@ cp ../../susfs4ksu/kernel_patches/include/linux/susfs.h ./common/include/linux/
 cd ./KernelSU-Next/
 cd ../common
 patch -p1 < 50_add_susfs_in_gki-android14-6.1.patch || true
-cp ../../kernel_patches/69_hide_stuff.patch ./
+cp ../../../kernel_patches/69_hide_stuff.patch ./
 patch -p1 -F 3 < 69_hide_stuff.patch || true
 cd ..
-cp ../kernel_patches/selinux.c_fix.patch ./
+cp ../../kernel_patches/selinux.c_fix.patch ./
 patch -p1 -F 3 < selinux.c_fix.patch
 
-cp ../kernel_patches/core_hook.c_fix.patch ./
+cp ../../kernel_patches/core_hook.c_fix.patch ./
 patch -p1 --fuzz=3 < ./core_hook.c_fix.patch
 
-cp ../kernel_patches/apk_sign.c_fix.patch ./
+cp ../../kernel_patches/apk_sign.c_fix.patch ./
 patch -p1 -F 3 < apk_sign.c_fix.patch
 
 
