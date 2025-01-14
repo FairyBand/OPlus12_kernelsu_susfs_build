@@ -34,34 +34,54 @@ repo sync -j$(nproc)
 rm -rf ./kernel_platform/common/android/abi_gki_protected_exports_*
 
 # Add KernelSU
-echo "adding ksu-next with susfs"
+echo "adding ksu"
 cd ./kernel_platform
-curl -LSs "https://raw.githubusercontent.com/rifsxd/KernelSU/next/kernel/setup.sh" | bash -s next-susfs-a14-6.1
+curl -LSs "https://raw.githubusercontent.com/rifsxd/KernelSU/next/kernel/setup.sh" | bash -s next
 cd ./KernelSU-Next/kernel
-sed -i 's/ccflags-y += -DKSU_VERSION=16/ccflags-y += -DKSU_VERSION=12113/' ./Makefile
+sed -i 's/ccflags-y += -DKSU_VERSION=16/ccflags-y += -DKSU_VERSION=12264/' ./Makefile
 cd ../../
 
 #add susfs
 echo "adding susfs"
+cp ../../susfs4ksu/kernel_patches/KernelSU/10_enable_susfs_for_ksu.patch ./KernelSU-Next/
 cp ../../susfs4ksu/kernel_patches/50_add_susfs_in_gki-android14-6.1.patch ./common/
 cp ../../susfs4ksu/kernel_patches/fs/susfs.c ./common/fs/
 cp ../../susfs4ksu/kernel_patches/include/linux/susfs.h ./common/include/linux/
-cd ./common
+cd ./KernelSU-Next/
+patch -p1 < 10_enable_susfs_for_ksu.patch
+cd ../common
 patch -p1 < 50_add_susfs_in_gki-android14-6.1.patch || true
-cp ../../../kernel_patches/69_hide_stuff.patch ./
+cp ../../kernel_patches/69_hide_stuff.patch ./
 patch -p1 -F 3 < 69_hide_stuff.patch || true
-sed -i '/obj-\$(CONFIG_KSU_SUSFS_SUS_SU) += sus_su.o/d' ./fs/Makefile
 cd ..
-cp ../../kernel_patches/Makefile_fix.patch ./
-patch -p1 --fuzz=3 < ./Makefile_fix.patch
+cp ../kernel_patches/selinux.c_fix.patch ./
+patch -p1 -F 3 < selinux.c_fix.patch
+
+cp ../kernel_patches/core_hook.c_fix.patch ./
+patch -p1 --fuzz=3 < ./core_hook.c_fix.patch
+
+cp ../kernel_patches/apk_sign.c_fix.patch ./
+patch -p1 -F 3 < apk_sign.c_fix.patch
 
 
 #build Kernel
 echo "CONFIG_KSU=y" >> ./common/arch/arm64/configs/gki_defconfig
 echo "CONFIG_KSU_SUSFS=y" >> ./common/arch/arm64/configs/gki_defconfig
-echo "CONFIG_KSU_SUSFS_SUS_SU=y" >> ./common/arch/arm64/configs/gki_defconfig
-echo "CONFIG_LOCALVERSION_AUTO=n" >> ./common/arch/arm64/configs/gki_defconfig
-echo "CONFIG_LOCALVERSION="Nijika"" >> ./common/arch/arm64/configs/gki_defconfig
+echo "CONFIG_KSU_SUSFS_HAS_MAGIC_MOUNT=y" >> ./common/arch/arm64/configs/gki_defconfig
+echo "CONFIG_KSU_SUSFS_SUS_PATH=y" >> ./common/arch/arm64/configs/gki_defconfig
+echo "CONFIG_KSU_SUSFS_SUS_MOUNT=y" >> ./common/arch/arm64/configs/gki_defconfig
+echo "CONFIG_KSU_SUSFS_AUTO_ADD_SUS_KSU_DEFAULT_MOUNT=y" >> ./common/arch/arm64/configs/gki_defconfig
+echo "CONFIG_KSU_SUSFS_AUTO_ADD_SUS_BIND_MOUNT=y" >> ./common/arch/arm64/configs/gki_defconfig
+echo "CONFIG_KSU_SUSFS_SUS_KSTAT=y" >> ./common/arch/arm64/configs/gki_defconfig
+echo "CONFIG_KSU_SUSFS_SUS_OVERLAYFS=y" >> ./common/arch/arm64/configs/gki_defconfig
+echo "CONFIG_KSU_SUSFS_TRY_UMOUNT=y" >> ./common/arch/arm64/configs/gki_defconfig
+echo "CONFIG_KSU_SUSFS_AUTO_ADD_TRY_UMOUNT_FOR_BIND_MOUNT=y" >> ./common/arch/arm64/configs/gki_defconfig
+echo "CONFIG_KSU_SUSFS_SPOOF_UNAME=y" >> ./common/arch/arm64/configs/gki_defconfig
+echo "CONFIG_KSU_SUSFS_ENABLE_LOG=y" >> ./common/arch/arm64/configs/gki_defconfig
+echo "CONFIG_KSU_SUSFS_HIDE_KSU_SUSFS_SYMBOLS=y" >> ./common/arch/arm64/configs/gki_defconfig
+echo "CONFIG_KSU_SUSFS_SPOOF_CMDLINE_OR_BOOTCONFIG=y" >> ./common/arch/arm64/configs/gki_defconfig
+echo "CONFIG_KSU_SUSFS_OPEN_REDIRECT=y" >> ./common/arch/arm64/configs/gki_defconfig
+echo "CONFIG_KSU_SUSFS_SUS_SU=y" >> ./common/arch/arm64/configs/gki_defconfigig
 cd ..
 sed -i '2s/check_defconfig//' ./kernel_platform/common/build.config.gki
 ./kernel_platform/oplus/build/oplus_build_kernel.sh pineapple gki
