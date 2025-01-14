@@ -38,6 +38,14 @@ jobs:
        - name: Install zip
          run: sudo apt install zip
 
+      #Install curl
+       - name: Install curl
+         run: sudo apt install curl
+
+      #Install sed
+       - name: Install sed
+         run: sudo apt install sed
+
       # Runs Kernel Build Script
        - name: Run Build Script
          run: sudo bash ./buildksususfs.sh
