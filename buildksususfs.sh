@@ -22,7 +22,6 @@ cd "$ROOT_DIR"
 echo "Cloning repositories..."
 git clone https://github.com/TheWildJames/AnyKernel3.git -b android14-5.15
 git clone https://gitlab.com/simonpunk/susfs4ksu.git -b gki-android14-6.1
-git clone https://github.com/TheWildJames/kernel_patches.git
 
 # Get the kernel
 echo "Get the kernel..."
@@ -52,15 +51,6 @@ patch -p1 < 50_add_susfs_in_gki-android14-6.1.patch || true
 cp ../../../kernel_patches/69_hide_stuff.patch ./
 patch -p1 -F 3 < 69_hide_stuff.patch || true
 cd ..
-cp ../../kernel_patches/selinux.c_fix.patch ./
-patch -p1 -F 3 < selinux.c_fix.patch
-
-cp ../../kernel_patches/core_hook.c_fix.patch ./
-patch -p1 --fuzz=3 < ./core_hook.c_fix.patch
-
-cp ../../kernel_patches/apk_sign.c_fix.patch ./
-patch -p1 -F 3 < apk_sign.c_fix.patch
-
 
 #build Kernel
 echo "CONFIG_KSU=y" >> ./common/arch/arm64/configs/gki_defconfig
