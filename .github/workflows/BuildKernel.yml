@@ -16,13 +16,9 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - name: Checkout Repo
-        uses: actions/checkout@v4
-
-      - name: Maximize build space
-        uses: easimon/maximize-build-space@master
-        with:
+       - name: Maximize build space
+         uses: easimon/maximize-build-space@master
+         with:
           root-reserve-mb: 8192
           temp-reserve-mb: 2048
           remove-dotnet: 'true'
@@ -30,15 +26,19 @@ jobs:
           remove-haskell: 'true'
           remove-codeql: 'true'
       
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it  
+       - name: Checkout Repo
+         uses: actions/checkout@v4
+      
       #Install Repo
-      - name: Install Repo
-        run: sudo apt install repo
+       - name: Install Repo
+         run: sudo apt install repo
 
       #Install zip
-      - name: Install zip
-        run: sudo apt install zip
+       - name: Install zip
+         run: sudo apt install zip
 
       # Runs Kernel Build Script
-      - name: Run Build Script
-        run: sudo bash ./buildksususfs.sh
+       - name: Run Build Script
+         run: sudo bash ./buildksususfs.sh
 
