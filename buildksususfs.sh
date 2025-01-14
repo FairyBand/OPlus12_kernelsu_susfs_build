@@ -1,3 +1,4 @@
+#!/bin/sh
 set -e
 
 # Check if 'builds' folder exists, create it if not
