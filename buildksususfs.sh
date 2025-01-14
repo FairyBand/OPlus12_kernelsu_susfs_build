@@ -22,6 +22,7 @@ cd "$ROOT_DIR"
 echo "Cloning repositories..."
 git clone https://github.com/TheWildJames/AnyKernel3.git -b android14-5.15
 git clone https://gitlab.com/simonpunk/susfs4ksu.git -b gki-android14-6.1
+git clone https://github.com/TheWildJames/kernel_patches.git
 
 # Get the kernel
 echo "Get the kernel..."
